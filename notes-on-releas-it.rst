@@ -4,7 +4,7 @@ Notes on "Release It!"
 .. image:: images/release-it-cover.png
    :height: 450 px
    :width: 350 px
-   :alt: Hello :)
+   :alt: relase it
    :target: https://www.amazon.com/Release-Design-Deploy-Production-Ready-Software-ebook/dp/B079YWMY2V
 
 |
