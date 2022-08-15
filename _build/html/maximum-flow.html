@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Maximum-flow problem &#8212; Maksadbek&#39;s tech blog</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Mutex and RWMutex in Go" href="golang-mutex-internals.html" />
+    <link rel="prev" title="Contraction Hierarchies" href="contraction-hierarchies.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/me.jpg" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Maksadbek's tech blog</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="notes-on-releas-it.html">
+   Notes on “Release It!”
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contraction-hierarchies.html">
+   Contraction Hierarchies
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Maximum-flow problem
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="golang-mutex-internals.html">
+   Mutex and RWMutex in Go
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right"><label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#flow-and-flow-networks">
+   Flow and flow networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#residual-networks">
+   Residual networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cuts-of-flow-networks">
+   Cuts of flow networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code">
+   Code
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Maximum-flow problem</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#flow-and-flow-networks">
+   Flow and flow networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#residual-networks">
+   Residual networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cuts-of-flow-networks">
+   Cuts of flow networks
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code">
+   Code
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="maximum-flow-problem">
+<h1>Maximum-flow problem<a class="headerlink" href="#maximum-flow-problem" title="Permalink to this headline">#</a></h1>
+<section id="flow-and-flow-networks">
+<h2>Flow and flow networks<a class="headerlink" href="#flow-and-flow-networks" title="Permalink to this headline">#</a></h2>
+<p><strong>Flow network</strong> is a graph <span class="math notranslate nohighlight">\(G = (V, E)\)</span> with the following
+features:</p>
+<ul class="simple">
+<li><p>Each edge has a nonnegative capacity - <span class="math notranslate nohighlight">\(c_e\)</span></p></li>
+<li><p>There is a single node considered as <em>source</em> of the flow</p></li>
+<li><p>The is a single node considered as <em>sink</em> that absorbs the flow.</p></li>
+<li><p>No edge enters the <em>source</em> and no edges leaves <em>sink</em></p></li>
+<li><p>There is at least one edge incident to each node.</p></li>
+</ul>
+<p>The nodes other than <em>source</em> and <em>sink</em> are called <em>internal</em> nodes.</p>
+<p><strong>Flow</strong> is a function <span class="math notranslate nohighlight">\(f\)</span> that maps each edge <span class="math notranslate nohighlight">\(e\)</span> to a
+nonnegative real number: <span class="math notranslate nohighlight">\(f: e \to r\)</span>; the value of <span class="math notranslate nohighlight">\(f(e)\)</span>
+represents the amount of flow carried by edge <span class="math notranslate nohighlight">\(e\)</span>. a flow
+<span class="math notranslate nohighlight">\(f\)</span> must satisfy the following two properties:</p>
+<p>The flow from <span class="math notranslate nohighlight">\(u\)</span> to <span class="math notranslate nohighlight">\(v\)</span> is a nonnegative and defined as
+<span class="math notranslate nohighlight">\(f(u, v)\)</span> and value of a flow <span class="math notranslate nohighlight">\(f\)</span> is denoted with
+<span class="math notranslate nohighlight">\(\vert f \vert\)</span> and defined as:
+<span class="math notranslate nohighlight">\(\vert f \vert = \sum_{v \in v} f(s, v) - \sum_{v \in v} f(v, s)\)</span>.
+That is, the total from out of source to adjacent vertexes minus the
+total flow from adjacent vertexes into source. yes, this can happen,
+where source node has both incoming and outgoing edges.</p>
+<p>Even if we have a rule “no edge enters the <em>source</em>”. But, this formula
+covers only “residual networks”.</p>
+<p>To solve this problem we use Ford-Fulkerson method. This method
+iteratively increases overall value of flow and on each iteration
+increases the flow of the edges of some path from <span class="math notranslate nohighlight">\(s\)</span> to <span class="math notranslate nohighlight">\(t\)</span>
+as much as possible:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">ford</span><span class="o">-</span><span class="n">fulkerson</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="n">let</span> <span class="n">flow</span> <span class="n">be</span> <span class="mi">0</span>
+    <span class="n">let</span> <span class="n">G_f</span> <span class="n">be</span> <span class="n">the</span> <span class="n">residual</span> <span class="n">network</span> <span class="n">of</span> <span class="n">G</span>
+
+    <span class="k">while</span> <span class="n">there</span> <span class="n">exists</span> <span class="n">a</span> <span class="n">path</span> <span class="n">P</span> <span class="ow">in</span> <span class="n">Gf</span><span class="p">:</span>
+        <span class="n">let</span> <span class="n">min_res_cap</span> <span class="n">be</span> <span class="n">the</span> <span class="n">minimum</span> <span class="n">residual</span> <span class="n">capacity</span> <span class="ow">in</span> <span class="n">P</span>
+        <span class="n">augment</span> <span class="n">edges</span> <span class="n">of</span> <span class="n">P</span> <span class="n">by</span> <span class="n">min_res_cap</span>
+        <span class="n">increment</span> <span class="n">flow</span> <span class="n">by</span> <span class="n">min_res_cap</span>
+    <span class="n">end</span>
+
+    <span class="k">return</span> <span class="n">flow</span>
+<span class="n">end</span>
+</pre></div>
+</div>
+</section>
+<section id="residual-networks">
+<h2>Residual networks<a class="headerlink" href="#residual-networks" title="Permalink to this headline">#</a></h2>
+<p>The residual network consists of edges with capacities that represent
+how we can change the flow on edge of graph g. the residual network is
+denoted as <span class="math notranslate nohighlight">\(g_f\)</span>. Some edges of the flow network does not use all
+the capacity of the edge. So, it can admit more flow: capacity minus
+flow. We place that edge into <span class="math notranslate nohighlight">\(g_f\)</span> with “residual capacity” of
+<span class="math notranslate nohighlight">\(c_f(u,v) = c(u,v) - f(u,v)\)</span>. those edges whose flow equals their
+capacity are not included in <span class="math notranslate nohighlight">\(g_f\)</span>. however, the residual network
+can contain edges that does not exist in original graph. more formally,
+the <strong>residual capacity</strong> defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}c_f(u, v) =
+\begin{cases}
+c(u, v) - f(u, v), &amp; \text{if (u, v) $\in$ e} \\
+f(u, v), &amp; \text{if(v, u) $\in$ e} \ 0 &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>we choose a path from residual network and then augment that path with
+flow <span class="math notranslate nohighlight">\(f\)</span>. the augmented flow is denoted as <span class="math notranslate nohighlight">\(f \uparrow f\)</span>
+and its definition is previous flow plus the new flow minus going back
+flow. we find the minimum flow in the residual path and send it to the
+path. this avoid getting going back flows. the intuition behind this
+definition as follows:</p>
+<blockquote>
+<div><p>We increase the flow on <span class="math notranslate nohighlight">\((u, v)\)</span> by <span class="math notranslate nohighlight">\(f'(u, v)\)</span> but
+decrease it by <span class="math notranslate nohighlight">\(f'(v, u)\)</span> because pushing flow on the reverse
+edge in the residual network signifies decreasing the flow in the
+original network. pushing flow on the reverse edge in the residual
+network is also known as cancellation. for example, if we send 5
+crates of hockey pucks from <span class="math notranslate nohighlight">\(u\)</span> to <span class="math notranslate nohighlight">\(v\)</span> and send 2 crates
+from <span class="math notranslate nohighlight">\(v\)</span> to <span class="math notranslate nohighlight">\(u\)</span>, we could equivalently (from the
+perspective of the final result) just send 3 creates from <span class="math notranslate nohighlight">\(u\)</span>
+to <span class="math notranslate nohighlight">\(v\)</span> and none from <span class="math notranslate nohighlight">\(v\)</span> to <span class="math notranslate nohighlight">\(u\)</span>. Cancellation of
+this type is crucial for any maximum-flow algorithm</p>
+</div></blockquote>
+<p>The path from <span class="math notranslate nohighlight">\(s\)</span> to <span class="math notranslate nohighlight">\(t\)</span> in the residual network is called
+<strong>augmenting path</strong>. we can increase the flow of edge <span class="math notranslate nohighlight">\((u, v)\)</span> of
+an aughmenting path by up to <span class="math notranslate nohighlight">\(c_f(u, v)\)</span>. the maximum amount by
+which we can increase the flow of edges in the path is called a
+<strong>residual capacity</strong> and it is defined as:
+<span class="math notranslate nohighlight">\(c_f(p) = \min\{ c_f(u, v): (u, v) \text{ is on } p \}\)</span></p>
+<p><strong>Lemma:</strong> Let <span class="math notranslate nohighlight">\(G = (V, E)\)</span> be a flow network with source
+<span class="math notranslate nohighlight">\(s\)</span> and sink <span class="math notranslate nohighlight">\(t\)</span>,and let <span class="math notranslate nohighlight">\(f\)</span> be a flow in <span class="math notranslate nohighlight">\(G\)</span>.
+Let <span class="math notranslate nohighlight">\(G_f\)</span> be the residual network of <span class="math notranslate nohighlight">\(G\)</span> induced by
+<span class="math notranslate nohighlight">\(f\)</span>,and let <span class="math notranslate nohighlight">\(f'\)</span> be a flow in <span class="math notranslate nohighlight">\(G_f\)</span>. Then the function
+<span class="math notranslate nohighlight">\(f \uparrow f'\)</span> defined in equation (26.4) is a flow in <span class="math notranslate nohighlight">\(G\)</span>
+with value
+<span class="math notranslate nohighlight">\(\vert f \uparrow f' \vert = \vert f \vert + \vert f \vert + \vert f' \vert\)</span>.</p>
+<p>This lemma is true, don’t ask me why. Look at CLRS for the proof.</p>
+</section>
+<section id="cuts-of-flow-networks">
+<h2>Cuts of flow networks<a class="headerlink" href="#cuts-of-flow-networks" title="Permalink to this headline">#</a></h2>
+<p>we get a maximum flow continously augmenting the flow along augmenting
+paths until there are no paths left from <span class="math notranslate nohighlight">\(s\)</span> to <span class="math notranslate nohighlight">\(t\)</span>. the
+problem is how do we verify the maximum flow. we need techniques for
+bounding the size of maxflow. the basic idea is to find a <strong>bottleneck</strong>
+for the flow and all flow needs to cross the bottleneck. a minimum cut
+of a network is a cut whose capacity is minimum over all cuts of the
+network.</p>
+<p>the max-flow min-cut theorem tells us that a flow is maximum if and only
+if its residual network contains no augmenting path.</p>
+<p>firstly, a cut <span class="math notranslate nohighlight">\((s, t)\)</span> of flow <span class="math notranslate nohighlight">\(g = (v, e)\)</span> is partition of
+<span class="math notranslate nohighlight">\(v\)</span> into <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(t = v - s\)</span>. simply, the first half
+of the cut contains all the sources of <span class="math notranslate nohighlight">\(g\)</span>. the net-flow
+<span class="math notranslate nohighlight">\(f(s,t)\)</span> is defined as</p>
+<div class="math notranslate nohighlight">
+\[f(s,t) = \sum_{u \in s} \sum_{v \in t} f(u, v) - \sum_{u \in s} \sum_{v \in t} f(v, u)\]</div>
+<p>That is the sum of flow going to cut <span class="math notranslate nohighlight">\(s\)</span> minus sum of flows going
+back from <span class="math notranslate nohighlight">\(t\)</span> into <span class="math notranslate nohighlight">\(s\)</span>.</p>
+<p>The capacity of cut is
+<span class="math notranslate nohighlight">\(c(s, t) = \sum_{u \in s} \sum_{v \in t} c(u, v)\)</span>. The <strong>minimum
+cut</strong> of network is a cut whose capacity in minimum over all cuts of the
+network.</p>
+</section>
+<section id="code">
+<h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">#</a></h2>
+<p>The implementation of this algorithm is written in C++</p>
+<div class="highlight-C++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;limits&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stack&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span><span class="cp"></span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">stack</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Edge</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span><span class="w"> </span><span class="n">flow</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FlowGraph</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">private</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Edge</span><span class="o">&gt;</span><span class="w"> </span><span class="n">edges</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">FlowGraph</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">graph</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">add_edge</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">capacity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// We first append a forward edge and then a backward edge.</span>
+<span class="w">        </span><span class="c1">// All forward edges are stored at EVEN indices (starting from 0),</span>
+<span class="w">        </span><span class="c1">// whereas backward edges are stored at ODD indices in the list edges.</span>
+<span class="w">        </span><span class="n">Edge</span><span class="w"> </span><span class="n">forward_edge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+<span class="w">        </span><span class="n">Edge</span><span class="w"> </span><span class="n">backward_edge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">graph</span><span class="p">[</span><span class="n">from</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">edges</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">forward_edge</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">graph</span><span class="p">[</span><span class="n">to</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">edges</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="w">        </span><span class="n">edges</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">backward_edge</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">get_ids</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">graph</span><span class="p">[</span><span class="n">from</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="w"> </span><span class="o">&amp;</span><span class="n">get_edge</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">edges</span><span class="p">[</span><span class="n">id</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">add_flow</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">flow</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">       </span><span class="cm">/*</span>
+<span class="cm">        * To get a backward edge for a true forward edge (i.e id is even), we</span>
+<span class="cm">        * should get id + 1 due to the described above scheme. On the other hand,</span>
+<span class="cm">        * when we have to get a &quot;backward&quot; edge for a backward edge (i.e. get a</span>
+<span class="cm">        * forward edge for backward - id is odd), id - 1 should be taken.</span>
+<span class="cm">        *</span>
+<span class="cm">        * It turns out that id ^ 1 works for both cases. Think this through!</span>
+<span class="cm">        */</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">edges</span><span class="p">[</span><span class="n">id</span><span class="p">].</span><span class="n">flow</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">flow</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">edges</span><span class="p">[</span><span class="n">id</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="mi">1</span><span class="p">].</span><span class="n">flow</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">flow</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="n">FlowGraph</span><span class="w"> </span><span class="nf">read_data</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">vertex_count</span><span class="p">,</span><span class="w"> </span><span class="n">edge_count</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">vertex_count</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">edge_count</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">FlowGraph</span><span class="w"> </span><span class="n">graph</span><span class="p">(</span><span class="n">vertex_count</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">edge_count</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">graph</span><span class="p">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">capacity</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dfs</span><span class="p">(</span><span class="n">FlowGraph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">graph</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">stack</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">s</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">from</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">used</span><span class="p">(</span><span class="n">graph</span><span class="p">.</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">parent</span><span class="p">(</span><span class="n">graph</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">s</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">top</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="n">used</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">u</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">get_ids</span><span class="p">(</span><span class="n">u</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">Edge</span><span class="o">&amp;</span><span class="w"> </span><span class="n">edge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">get_edge</span><span class="p">(</span><span class="n">v</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">edge</span><span class="p">.</span><span class="n">capacity</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">edge</span><span class="p">.</span><span class="n">flow</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="k">continue</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">used</span><span class="p">[</span><span class="n">edge</span><span class="p">.</span><span class="n">to</span><span class="p">])</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">                </span><span class="n">s</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">edge</span><span class="p">.</span><span class="n">to</span><span class="p">);</span><span class="w"></span>
+<span class="w">                </span><span class="n">parent</span><span class="p">[</span><span class="n">edge</span><span class="p">.</span><span class="n">to</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">path</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">to</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">from</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parent</span><span class="p">[</span><span class="n">to</span><span class="p">];</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">-1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">path</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">get_edge</span><span class="p">(</span><span class="n">id</span><span class="p">).</span><span class="n">from</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">path</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">max_flow</span><span class="p">(</span><span class="n">FlowGraph</span><span class="w"> </span><span class="o">&amp;</span><span class="n">graph</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">flow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dfs</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">path</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">edge_id</span><span class="o">:</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">edge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">get_edge</span><span class="p">(</span><span class="n">edge_id</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">cf</span><span class="p">,</span><span class="w"> </span><span class="n">edge</span><span class="p">.</span><span class="n">capacity</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">edge</span><span class="p">.</span><span class="n">flow</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">        </span><span class="n">flow</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">cf</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">edge</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">graph</span><span class="p">.</span><span class="n">add_flow</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span><span class="w"> </span><span class="n">cf</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">flow</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">FlowGraph</span><span class="w"> </span><span class="n">graph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read_data</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">max_flow</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">graph</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="contraction-hierarchies.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Contraction Hierarchies</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="golang-mutex-internals.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Mutex and RWMutex in Go</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Maksadbek<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
